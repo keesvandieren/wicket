@@ -44,6 +44,13 @@ import org.slf4j.LoggerFactory;
  * and query parameters of URLs starting with {@link IMapperContext#getNamespace()}, and just the
  * {@link PageComponentInfo} parameter for mounted URLs.
  * </p>
+ *
+ * <p>
+ * <strong>Important</strong>: for better security it is recommended to use
+ * {@link org.apache.wicket.core.request.mapper.CryptoMapper#CryptoMapper(org.apache.wicket.request.IRequestMapper, org.apache.wicket.util.IProvider)} constructor with {@link org.apache.wicket.util.crypt.ICrypt} implementation that generates a
+ * separate key for each user. {@link org.apache.wicket.util.crypt.SunJceCrypt} is such implementation that stores
+ * the key in the HTTP session.
+ * </p>
  * 
  * <p>
  * This mapper can be mounted before or after mounting other pages, but will only encrypt URLs for
@@ -80,6 +87,8 @@ import org.slf4j.LoggerFactory;
  * @author igor.vaynberg
  * @author Jesse Long
  * @author svenmeier
+ * @see org.apache.wicket.settings.ISecuritySettings#setCryptFactory(org.apache.wicket.util.crypt.ICryptFactory)
+ * @see org.apache.wicket.util.crypt.SunJceCrypt
  */
 public class CryptoMapper implements IRequestMapperDelegate
 {
@@ -103,14 +112,18 @@ public class CryptoMapper implements IRequestMapperDelegate
 	/**
 	 * Encrypt with {@link ISecuritySettings#getCryptFactory()}.
 	 * <p>
-	 * Note: Encryption is done with {@link ISecuritySettings#DEFAULT_ENCRYPTION_KEY} if you haven't
-	 * configured an alternative {@link ICryptFactory}. Alternatively use
-	 * {@link CryptoMapper#CryptoMapper(IRequestMapper, IProvider)} with a specific {@link ICrypt}.
+	 * <strong>Important</strong>: Encryption is done with {@link ISecuritySettings#DEFAULT_ENCRYPTION_KEY} if you haven't
+	 * configured an alternative {@link ICryptFactory}. For better security it is recommended to use
+	 * {@link CryptoMapper#CryptoMapper(IRequestMapper, IProvider)} with a specific {@link ICrypt} implementation
+	 * that generates a separate key for each user.
+	 * {@link org.apache.wicket.util.crypt.SunJceCrypt} is such implementation that stores the key in the HTTP session..
+	 * </p>
 	 * 
 	 * @param wrappedMapper
 	 *            the non-crypted request mapper
 	 * @param application
 	 *            the current application
+	 * @see org.apache.wicket.util.crypt.SunJceCrypt
 	 */
 	public CryptoMapper(final IRequestMapper wrappedMapper, final Application application)
 	{
@@ -163,9 +176,9 @@ public class CryptoMapper implements IRequestMapperDelegate
 	 * This implementation decrypts the URL and passes the decrypted URL to the wrapped mapper.
 	 * </p>
 	 * @param request
-	 *		The request for which to get a compatability score.
+	 *		The request for which to get a compatibility score.
 	 * 
-	 * @return The compatability score.
+	 * @return The compatibility score.
 	 */
 	@Override
 	public int getCompatibilityScore(final Request request)
@@ -466,7 +479,7 @@ public class CryptoMapper implements IRequestMapperDelegate
 		{
 			/*
 			 * This should always be true. Home page URLs are the only ones without
-			 * segments, and we dont encrypt those with this method.
+			 * segments, and we don't encrypt those with this method.
 			 * 
 			 * We always add the first segment of the URL, because we encrypt a URL like:
 			 *	/path/to/something
