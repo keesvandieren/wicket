@@ -47,9 +47,10 @@ import org.slf4j.LoggerFactory;
  *
  * <p>
  * <strong>Important</strong>: for better security it is recommended to use
- * {@link org.apache.wicket.core.request.mapper.CryptoMapper#CryptoMapper(org.apache.wicket.request.IRequestMapper, org.apache.wicket.util.IProvider)} constructor with {@link org.apache.wicket.util.crypt.ICrypt} implementation that generates a
- * separate key for each user. {@link org.apache.wicket.util.crypt.SunJceCrypt} is such implementation that stores
- * the key in the HTTP session.
+ * {@link org.apache.wicket.core.request.mapper.CryptoMapper#CryptoMapper(org.apache.wicket.request.IRequestMapper, org.apache.wicket.util.IProvider)}
+ * constructor with {@link org.apache.wicket.util.crypt.ICrypt} implementation that generates a
+ * separate key for each user. {@link org.apache.wicket.core.util.crypt.KeyInSessionSunJceCryptFactory} provides such an
+ * implementation that stores the key in the HTTP session.
  * </p>
  * 
  * <p>
@@ -80,7 +81,7 @@ import org.slf4j.LoggerFactory;
  * 
  * <p>
  * {@link CryptoMapper} can be configured to mark encrypted URLs as encrypted, and throw a {@link PageExpiredException}
- * exception if a encrypted URL cannot be decrypted. This can occur when using {@code KeyInSessionSubJceCryptFactory}, and
+ * exception if a encrypted URL cannot be decrypted. This can occur when using {@code KeyInSessionSunJceCryptFactory}, and
  * the session has expired.
  * </p>
  * 
@@ -88,6 +89,7 @@ import org.slf4j.LoggerFactory;
  * @author Jesse Long
  * @author svenmeier
  * @see org.apache.wicket.settings.ISecuritySettings#setCryptFactory(org.apache.wicket.util.crypt.ICryptFactory)
+ * @see org.apache.wicket.core.util.crypt.KeyInSessionSunJceCryptFactory
  * @see org.apache.wicket.util.crypt.SunJceCrypt
  */
 public class CryptoMapper implements IRequestMapperDelegate
@@ -116,7 +118,8 @@ public class CryptoMapper implements IRequestMapperDelegate
 	 * configured an alternative {@link ICryptFactory}. For better security it is recommended to use
 	 * {@link CryptoMapper#CryptoMapper(IRequestMapper, IProvider)} with a specific {@link ICrypt} implementation
 	 * that generates a separate key for each user.
-	 * {@link org.apache.wicket.util.crypt.SunJceCrypt} is such implementation that stores the key in the HTTP session..
+	 * {@link org.apache.wicket.core.util.crypt.KeyInSessionSunJceCryptFactory} provides such an implementation that stores the
+	 * key in the HTTP session.
 	 * </p>
 	 * 
 	 * @param wrappedMapper
