@@ -25,6 +25,7 @@ import org.apache.wicket.authorization.UnauthorizedInstantiationException;
 import org.apache.wicket.settings.ISecuritySettings;
 import org.apache.wicket.util.crypt.CachingSunJceCryptFactory;
 import org.apache.wicket.util.crypt.ICryptFactory;
+import org.apache.wicket.util.lang.Args;
 
 /**
  * @author Jonathan Locke
@@ -80,9 +81,6 @@ public class SecuritySettings implements ISecuritySettings
 		return authorizationStrategy;
 	}
 
-	/**
-	 * @see org.apache.wicket.settings.ISecuritySettings#getCryptFactory()
-	 */
 	@Override
 	public synchronized ICryptFactory getCryptFactory()
 	{
@@ -117,23 +115,14 @@ public class SecuritySettings implements ISecuritySettings
 	@Override
 	public void setAuthorizationStrategy(IAuthorizationStrategy strategy)
 	{
-		if (strategy == null)
-		{
-			throw new IllegalArgumentException("authorization strategy cannot be set to null");
-		}
+		Args.notNull(strategy, "authorization strategy");
 		authorizationStrategy = strategy;
 	}
 
-	/**
-	 * @see org.apache.wicket.settings.ISecuritySettings#setCryptFactory(org.apache.wicket.util.crypt.ICryptFactory)
-	 */
 	@Override
 	public void setCryptFactory(ICryptFactory cryptFactory)
 	{
-		if (cryptFactory == null)
-		{
-			throw new IllegalArgumentException("cryptFactory cannot be null");
-		}
+		Args.notNull(cryptFactory, "Crypt factory");
 		this.cryptFactory = cryptFactory;
 	}
 

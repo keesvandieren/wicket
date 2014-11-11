@@ -86,7 +86,9 @@ public abstract class AbstractCrypt implements ICrypt
 		try
 		{
 			byte[] encrypted = encryptStringToByteArray(plainText);
-			return new String(new Base64(-1, null, true).encode(encrypted), CHARACTER_ENCODING);
+			Base64 base64 = new Base64(-1, null, true);
+			byte[] encoded = base64.encode(encrypted);
+			return new String(encoded, CHARACTER_ENCODING);
 		}
 		catch (GeneralSecurityException e)
 		{
@@ -142,7 +144,7 @@ public abstract class AbstractCrypt implements ICrypt
 	 *            byte array to decrypt
 	 * @return the decrypted text
 	 */
-	private final byte[] decryptByteArray(final byte[] encrypted)
+	private byte[] decryptByteArray(final byte[] encrypted)
 	{
 		try
 		{
@@ -163,7 +165,7 @@ public abstract class AbstractCrypt implements ICrypt
 	 * @return the string encrypted
 	 * @throws GeneralSecurityException
 	 */
-	private final byte[] encryptStringToByteArray(final String plainText)
+	private byte[] encryptStringToByteArray(final String plainText)
 		throws GeneralSecurityException
 	{
 		try
