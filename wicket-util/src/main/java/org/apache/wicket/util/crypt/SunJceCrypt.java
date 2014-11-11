@@ -49,13 +49,13 @@ public class SunJceCrypt extends AbstractCrypt
 	private final static int COUNT = 17;
 
 	/** Name of the default encryption method */
-	private static final String CRYPT_METHOD = "PBEWithMD5AndDES";
+	public static final String DEFAULT_CRYPT_METHOD = "PBEWithMD5AndDES";
 
 	/** Salt */
 	private final static byte[] salt = { (byte)0x15, (byte)0x8c, (byte)0xa3, (byte)0x4a,
 			(byte)0x66, (byte)0x51, (byte)0x2a, (byte)0xbc };
 
-	/** Name of encryption method */
+	/** The name of encryption method (cipher) */
 	private final String cryptMethod;
 
 	/**
@@ -63,14 +63,16 @@ public class SunJceCrypt extends AbstractCrypt
 	 */
 	public SunJceCrypt()
 	{
-		this(CRYPT_METHOD);
+		this(DEFAULT_CRYPT_METHOD);
 	}
 
 	/**
-	 * Constructor.
+	 * Constructor that uses a custom encryption method (cipher).
+	 * You may need to override {@link #createKeySpec()} and/or
+	 * {@link #createParameterSpec()} for the custom cipher.
 	 *
 	 * @param cryptMethod
-	 *              the name of encryption method
+	 *              the name of encryption method (the cipher)
 	 */
 	public SunJceCrypt(String cryptMethod)
 	{
