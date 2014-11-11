@@ -128,7 +128,7 @@ public class SunJceCrypt extends AbstractCrypt
 	 * @throws InvalidKeySpecException
 	 *             invalid encryption key
 	 */
-	private SecretKey generateSecretKey() throws NoSuchAlgorithmException,
+	protected SecretKey generateSecretKey() throws NoSuchAlgorithmException,
 		InvalidKeySpecException
 	{
 		SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(cryptMethod);
