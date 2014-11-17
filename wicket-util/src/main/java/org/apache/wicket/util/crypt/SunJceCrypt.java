@@ -52,7 +52,7 @@ public class SunJceCrypt extends AbstractCrypt
 	public static final String DEFAULT_CRYPT_METHOD = "PBEWithMD5AndDES";
 
 	/** Salt */
-	private final static byte[] salt = { (byte)0x15, (byte)0x8c, (byte)0xa3, (byte)0x4a,
+	public final static byte[] SALT = { (byte)0x15, (byte)0x8c, (byte)0xa3, (byte)0x4a,
 			(byte)0x66, (byte)0x51, (byte)0x2a, (byte)0xbc };
 
 	/** The name of encryption method (cipher) */
@@ -106,14 +106,20 @@ public class SunJceCrypt extends AbstractCrypt
 	 * @throws GeneralSecurityException
 	 */
 	@Override
-	protected final byte[] crypt(final byte[] input, final int mode)
+	protected byte[] crypt(final byte[] input, final int mode)
 		throws GeneralSecurityException
 	{
 		SecretKey key = generateSecretKey();
 		AlgorithmParameterSpec spec = createParameterSpec();
-		Cipher ciph = Cipher.getInstance(cryptMethod);
-		ciph.init(mode, key, spec);
+		Cipher ciph = createCipher(cryptMethod, key, spec, mode);
 		return ciph.doFinal(input);
+	}
+
+	protected Cipher createCipher(String cryptMethod, SecretKey key, AlgorithmParameterSpec spec, int mode) throws GeneralSecurityException
+	{
+		Cipher cipher = Cipher.getInstance(cryptMethod);
+		cipher.init(mode, key, spec);
+		return cipher;
 	}
 
 	/**
@@ -141,7 +147,7 @@ public class SunJceCrypt extends AbstractCrypt
 	 */
 	protected AlgorithmParameterSpec createParameterSpec()
 	{
-		return new PBEParameterSpec(salt, COUNT);
+		return new PBEParameterSpec(SALT, COUNT);
 	}
 
 	/**
