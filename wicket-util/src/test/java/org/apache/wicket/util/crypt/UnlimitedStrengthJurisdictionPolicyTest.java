@@ -61,6 +61,9 @@ public class UnlimitedStrengthJurisdictionPolicyTest extends Assert
 		assertThat(new String(decrypted2), is(equalTo(input2)));
 	}
 
+	/**
+	 * Based on http://stackoverflow.com/a/992413
+	 */
 	private static class UnlimitedStrenghtJurisdictionPolicyCrypt extends AbstractCrypt
 	{
 		private final Cipher crypter;
@@ -73,12 +76,13 @@ public class UnlimitedStrengthJurisdictionPolicyTest extends Assert
 			SecretKey tmp = factory.generateSecret(spec);
 			SecretKey secret = new SecretKeySpec(tmp.getEncoded(), "AES");
 
-			crypter = Cipher.getInstance("AES/CBC/PKCS5Padding");
+			String transformation = "AES/CBC/PKCS5Padding";
+			crypter = Cipher.getInstance(transformation);
 			crypter.init(Cipher.ENCRYPT_MODE, secret);
 			AlgorithmParameters params = crypter.getParameters();
 			byte[] iv = params.getParameterSpec(IvParameterSpec.class).getIV();
 
-			decrypter = Cipher.getInstance("AES/CBC/PKCS5Padding");
+			decrypter = Cipher.getInstance(transformation);
 			decrypter.init(Cipher.DECRYPT_MODE, secret, new IvParameterSpec(iv));
 		}
 
