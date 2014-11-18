@@ -111,11 +111,23 @@ public class SunJceCrypt extends AbstractCrypt
 	{
 		SecretKey key = generateSecretKey();
 		AlgorithmParameterSpec spec = createParameterSpec();
-		Cipher ciph = createCipher(cryptMethod, key, spec, mode);
+		Cipher ciph = createCipher(key, spec, mode);
 		return ciph.doFinal(input);
 	}
 
-	protected Cipher createCipher(String cryptMethod, SecretKey key, AlgorithmParameterSpec spec, int mode) throws GeneralSecurityException
+	/**
+	 * Creates the {@link javax.crypto.Cipher} that will do the de-/encryption.
+	 *
+	 * @param key
+	 *              the secret key to use
+	 * @param spec
+	 *              the parameters spec to use
+	 * @param mode
+	 *              the mode ({@link javax.crypto.Cipher#ENCRYPT_MODE} or {@link javax.crypto.Cipher#DECRYPT_MODE})
+	 * @return the cipher that will do the de-/encryption
+	 * @throws GeneralSecurityException
+	 */
+	protected Cipher createCipher(SecretKey key, AlgorithmParameterSpec spec, int mode) throws GeneralSecurityException
 	{
 		Cipher cipher = Cipher.getInstance(cryptMethod);
 		cipher.init(mode, key, spec);
@@ -127,7 +139,7 @@ public class SunJceCrypt extends AbstractCrypt
 	 * <p>
 	 * Note: if you don't provide your own encryption key, the implementation will use a default. Be
 	 * aware that this is potential security risk. Thus make sure you always provide your own one.
-	 * 
+	 *
 	 * @return secretKey the security key generated
 	 * @throws NoSuchAlgorithmException
 	 *             unable to find encryption algorithm specified
