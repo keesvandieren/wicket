@@ -22,8 +22,8 @@ import org.apache.wicket.authentication.strategy.DefaultAuthenticationStrategy;
 import org.apache.wicket.authorization.IAuthorizationStrategy;
 import org.apache.wicket.authorization.IUnauthorizedComponentInstantiationListener;
 import org.apache.wicket.authorization.UnauthorizedInstantiationException;
+import org.apache.wicket.core.util.crypt.KeyInSessionSunJceCryptFactory;
 import org.apache.wicket.settings.ISecuritySettings;
-import org.apache.wicket.util.crypt.CachingSunJceCryptFactory;
 import org.apache.wicket.util.crypt.ICryptFactory;
 import org.apache.wicket.util.lang.Args;
 
@@ -82,25 +82,16 @@ public class SecuritySettings implements ISecuritySettings
 	}
 
 	/**
-	 * Note: Prints a warning to stderr if no factory was set and {@link #DEFAULT_ENCRYPTION_KEY} is
-	 * used instead.
-	 * 
-	 * @return crypt factory used to generate crypt objects
+	 * @return crypt factory used to generate crypt objects. By default it uses
+	 * {@link org.apache.wicket.core.util.crypt.KeyInSessionSunJceCryptFactory} that
+	 * binds an HTTP session to store the user specific key
 	 */
 	@Override
 	public synchronized ICryptFactory getCryptFactory()
 	{
 		if (cryptFactory == null)
 		{
-			System.err
-				.print("********************************************************************\n"
-					+ "*** WARNING: Wicket is using a DEFAULT_ENCRYPTION_KEY            ***\n"
-					+ "***                            ^^^^^^^^^^^^^^^^^^^^^^            ***\n"
-					+ "*** Do NOT deploy to your live server(s) without changing this.  ***\n"
-					+ "*** See SecuritySettings#setCryptFactory() for more information. ***\n"
-					+ "********************************************************************\n");
-
-			cryptFactory = new CachingSunJceCryptFactory(DEFAULT_ENCRYPTION_KEY);
+			cryptFactory = new KeyInSessionSunJceCryptFactory();
 		}
 		return cryptFactory;
 	}
